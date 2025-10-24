@@ -57,10 +57,10 @@ func GetUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid ID"})
 	}
-	for _, u := range users {
-		if u.ID == id {
-			u.Age = calculateAge(u.DOB)
-			return c.JSON(u)
+	for i := range users {
+		if users[i].ID == id {
+			users[i].Age = calculateAge(users[i].DOB)
+			return c.JSON(users[i])
 		}
 	}
 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
