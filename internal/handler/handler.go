@@ -3,11 +3,16 @@ package handler
 import (
 	"API-project-go/internal/logger"
 	"API-project-go/internal/models"
+	"database/sql"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
+
+type UserHandler struct {
+	db *sql.DB
+}
 
 var users []models.User
 var nextID = 1
@@ -30,13 +35,13 @@ func calculateAge(dob string) int {
 func CreateUser(c *fiber.Ctx) error {
 	var newUser models.User
 	if err := c.BodyParser(&newUser); err != nil {
-		logger.Logger.Error("Failed to parse request", zap.Error(err))
+		logger.Log.Error("Failed to parse request", zap.Error(err))
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 	newUser.ID = nextID
 	nextID++
 	users = append(users, newUser)
-	logger.Logger.Info("User created", zap.String("name", newUser.Name))
+	logger.Log.Info("User created", zap.String("name", newUser.Name))
 	return c.Status(fiber.StatusCreated).JSON(newUser)
 }
 
