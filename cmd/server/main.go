@@ -1,24 +1,26 @@
 package main
 
 import (
+	"API-project-go/config"
 	"API-project-go/internal/logger"
 	"API-project-go/internal/routes"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"go.uber.org/zap"
 )
 
 func main() {
 	logger.InitLogger()
-	defer logger.Logger.Sync()
+	defer logger.Sync()
+
 	app := fiber.New()
-	routes.SetupRoutes(app)
 
-	logger.Logger.Info("Server running on :8080")
-	fmt.Println("Server running on :8080")
+	db := config.ConnectDB()
+	defer db.Close()
 
-	if err := app.Listen(":8080"); err != nil {
-		logger.Logger.Fatal("Failed to start server", zap.Error(err))
-	}
+	logger.Log.Info("Connected to MySQL Database Successfully!")
+
+	routes.SetupRoutes(app, db)
+
+	logger.Log.Info(" Starting server on port 8080...")
+	app.Listen(":8080")
 }
