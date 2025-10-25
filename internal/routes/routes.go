@@ -2,11 +2,12 @@ package routes
 
 import (
 	"API-project-go/internal/handler"
+	"database/sql"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupRoutes(app *fiber.App) {
+func SetupRoutes(app *fiber.App, db *sql.DB) {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("API is running successfully")
 	})
