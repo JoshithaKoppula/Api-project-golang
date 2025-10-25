@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"API-project-go/internal/models"
 	"API-project-go/internal/repository"
@@ -25,14 +24,9 @@ func (s *UserService) CreateUser(ctx context.Context, user models.User) (models.
 	return s.Repo.CreateUser(ctx, user)
 }
 
-// GetUserByID fetches a user and calculates age dynamically
-func (s *UserService) GetUserByID(ctx context.Context, id int) (models.User, int, error) {
-	user, err := s.Repo.GetUserByID(ctx, id)
-	if err != nil {
-		return models.User{}, 0, err
-	}
-	age := calculateAge(user.DOB)
-	return user, age, nil
+// GetUserByID fetches a user by ID
+func (s *UserService) GetUserByID(ctx context.Context, id int) (models.User, error) {
+	return s.Repo.GetUserByID(ctx, id)
 }
 
 // UpdateUser updates user details
@@ -48,14 +42,4 @@ func (s *UserService) DeleteUser(ctx context.Context, id int) error {
 // ListUsers retrieves all users
 func (s *UserService) ListUsers(ctx context.Context) ([]models.User, error) {
 	return s.Repo.ListUsers(ctx)
-}
-
-// Helper function to calculate age from DOB
-func calculateAge(dob time.Time) int {
-	now := time.Now()
-	age := now.Year() - dob.Year()
-	if now.YearDay() < dob.YearDay() {
-		age--
-	}
-	return age
 }
